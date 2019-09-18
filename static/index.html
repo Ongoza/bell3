@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Bell Video Server</title>
+    <link rel="stylesheet" type="text/css" href="static/js/bootstrap.min.css">
+    <script src="static/js/popper.min.js"></script>
+    <script src="static/js/jquery-3.4.1.min.js"></script>    
+    <script src="static/js/bootstrap.min.js"></script>
+    <!-- <script async src="js/opencv.js" type="text/javascript"></script> -->
+    <script src="static/js/main.js" ></script>
+</head>
+<body>
+    <script type="application/javascript">setHost("{{host}}","{{port}}"); </script>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Bell Video Server</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            <li class="nav-item active"><a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="#camera">Photos</a></li>
+            <li class="nav-item"><a class="nav-link" href="#camera">Config</a></li>
+            <li class="nav-item"><a class="nav-link" href="#camera">Alerts</a></li>
+            <li class="nav-item"><a class="nav-link" href="#camera">Log</a></li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <!-- <div class="card-columns"> -->
+    <div class="card border-secondary  mb-1" style="max-width: 66rem; height:auto;">
+            <div class="card-header"><h4 align="center">Camera: <span id='cameraIdHeaderLabel'>None</span></h4></div>
+        <div class="row no-gutters" ><div class="col-md-4" style="max-width:50rem; height:auto;" >
+            <img src="static/images/black.jpeg" class="card-img" id="camImg" style="width:36rem;height:auto;">
+            <!-- <canvas id="camImgCanvas"></canvas> -->
+            <!-- <button type="button" class="btn btn-link" data-toggle="modal" data-target="#imageModalCenter">Resize</button> -->
+        </div>
+        <div class="card-body">
+            <!-- <div class="row"><div class="col-sm-8"> -->
+            <div class="card border-primary mb-1" style="max-width: 26rem;">
+                    <!-- <div class="card-header"></div> -->
+                <div class="card-body">
+                        <p class="card-text"><b>Camera: </b>
+                    <button id="camStart" class="btn btn-primary btn-sm disabled">Connect</button>
+                    <button id="camUpdateData" class="btn btn-primary btn-sm disabled">Show data</button>
+                    <button type="button" id="startStream" class="btn btn-primary btn-sm disabled">Show picture</button></p>
+                <!-- </div></div> -->
+            </div></div>
+            <div class="card border-primary mb-1" style="max-width: 26rem;">
+                    <!-- <div class="card-header"></div> -->
+                <div class="card-body">
+                    <p class="card-text"><b>Config: </b>
+                        <button type="button" id="camConfigApply" class="btn btn-primary btn-sm disabled">Apply</button>
+                        <button type="button" id="camConfigUndo" class="btn btn-primary btn-sm disabled">Undo</button>
+                        <button type="button" id="camConfigSave" class="btn btn-primary btn-sm disabled">Save</button></p>
+                </div></div>
+                <div class="card border-primary mb-1" style="max-width: 26rem;">
+                        <!-- <div class="card-header"></div> -->
+                    <div class="card-body">
+                <p class="card-text"><b>Status:</b>
+                Frame N: <span id="N" class="badge badge-secondary">0</span>
+                Sever FPS: <span id="serverFps" class="badge badge-secondary">0</span>
+                Detect: <span id="detect" class="badge badge-secondary">0</span>
+                Location: <span id="location" class="badge badge-secondary">0</span>
+                Local FPS: <span id="localFps" class="badge badge-secondary">0</span>
+                Encode: <span id="encode" class="badge badge-secondary">0</span>
+                names: <span id="names" class="badge badge-secondary">0</span></p>
+            </div></div>
+        </div></div></div>
+    <div class="card border-secondary" style="max-width: 66rem;">
+        <div class="card-body">
+                <h5 class="card-title">Configuration</h5>
+            <form>
+        <div class="form-group row">
+                <label for="cId" class="col-sm-3 col-form-label">camera ID</label>
+                <div class="col-sm-7"><input type="text" class="form-control form-control-config" id="camId"></div>
+                </div>  
+        <div class="form-group row">
+                <label for="cName" class="col-sm-3 col-form-label">camera Name</label>
+                <div class="col-sm-7"><input type="text" class="form-control form-control-config" id="camName"></div>
+                </div>   
+        <div class="form-group row">
+                <label for="cUrl" class="col-sm-3 col-form-label">camUrl</label>
+                <div class="col-sm-7"><input type="text" class="form-control form-control-config" id="camUrl"></div>
+                </div>    
+        <div class="form-group row">
+                <label for="vdScl" class="col-3 col-form-label">videoScale</label><div class="col-4">
+                    <input class="form-control form-control-config input-range" type="range" min="0.1" max="2" step="0.1" id="vdScl">
+                </div><div class="col-1"><output id="vdSclOut" for="vdScl"></output>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="cConn" class="col-3 col-form-label">connectionTimesCounter</label><div class="col-4">
+                <input class="form-control form-control-config input-range" type="range" min="1" max="10" step="1" id="cConn">
+            </div><div class="col-1"><output id="cConnOut" for="cConn"></output></div>
+        </div>
+        <div class="form-group row">
+            <label for="frSkip" class="col-3 col-form-label">skipFames</label><div class="col-4">
+                <input class="form-control form-control-config input-range" type="range" min="1" max="10" step="1" id="frSkip">
+            </div><div class="col-1"><output id="frSkipOut" for="frSkip"></output></div>
+        </div>
+        <div class="form-group row">
+                <div class="col-sm-8"><div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input form-control-config" id="isDetect">
+                    <label class="custom-control-label" for="isDetect">Enable face detection</label>
+                </div></div>
+            </div>
+            <div class="form-group row">
+                    <div class="col-sm-8">
+                <div class="dropdown" id="classifierIndexMain">
+                    <label for="dtctInd">Select face detection type:</label>
+                    <button class="btn btn-link btn-sm dropdown-toggle" id="dtctInd" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">None</button>
+                    <div class="dropdown-menu" aria-labelledby="dtctInd" id="classifierIndexMenu">
+                        <a class="dropdown-item dropdown-item-config" name ="dtctInd"  id="0dtctInd" href="#">haarcascade_frontalface_default</a>
+                        <a class="dropdown-item dropdown-item-config" name ="dtctInd"  id="1dtctInd" href="#">haarcascade_frontalface_alt</a>
+                        <a class="dropdown-item dropdown-item-config" name ="dtctInd" id="2dtctInd" href="#">haarcascade_frontalface_alt2</a>
+                        <a class="dropdown-item dropdown-item-config" name ="dtctInd" id="3dtctInd" href="#">haarcascade_frontalface_alt_tree</a>
+                        <a class="dropdown-item dropdown-item-config" name ="dtctInd" id="4dtctInd" href="#">intelFace</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item dropdown-item-config" name ="dtctInd" id="5dtctInd" href="#">TensorFlow (TF)</a>
+                    </div>
+                </div></div>
+            </div>
+        <!-- <div class="form-group row">
+                <label for="faceBorder" class="col-3 col-form-label">faceBorder</label><div class="col-4">
+                    <input class="form-control input-range form-control-config" type="range" min="0" max="40" step="1" id="faceBorder">
+                </div><div class="col-1"><output id="faceBorderOut" for="faceBorder"></output></div>
+        </div> -->
+        <!-- <div class="form-group row">
+            <label for="scaleFactor" class="col-3 col-form-label">scaleFactor</label><div class="col-4">
+                <input class="form-control form-control-config input-range" type="range" min="1.01" max="1.5" step="0.01" id="scaleFactor">
+                </div><div class="col-1"><output id="scaleFactorOut" for="scaleFactor"></output></div>
+        </div>
+        <div class="form-group row">
+            <label for="scaleFactor" class="col-3 col-form-label">confThreshold <span style="font-size:small"><br>(*only for TF. Camera will restart)</span></label>
+            <div class="col-4">
+                <input class="form-control form-control-config input-range" type="range" min="0.1" max="0.9" step="0.1" id="confThreshold">
+                </div><div class="col-1"><output id="confThresholdOut" for="confThreshold"></output></div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-8"><div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input form-control-config" id="isCompare">
+                <label class="custom-control-label" for="isCompare">Enable fast face recognation</label>
+            </div></div>
+        </div>
+        <div class="form-group row">
+                <label for="compareValue" class="col-3 col-form-label">compareValue</label><div class="col-4">
+                    <input class="form-control form-control-config input-range" type="range" min="0.4" max="0.9" step="0.1" id="compareValue">
+                </div><div class="col-1"> <output id="compareValueOut" for="compareValue"></output> </div>
+            </div>
+        <div class="form-group row">
+            <div class="col-sm-8"><div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input form-control-config" id="isCompareSlow">
+                <label class="custom-control-label" for="isCompareSlow">Enable slow face recognation</label>
+            </div></div>
+        </div> -->
+    </form></div></div>
+    <!-- Modal -->
+    <div class="modal fade" id="spinModal" tabindex="-1" role="dialog" aria-labelledby="spinModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="spinModalTitle">Appling command...</h5>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-center">
+                    <span class="spinner-border text-primary" role="status"></span>
+                </div><br>
+                <textarea rows="30" cols="90" id="spinModalText" style="font-size: 50%;resize:none;overflow-y:scroll;height:100px;max-height:100px;"></textarea>
+            </div>
+            <div class="modal-footer">
+            <button id="spinModalStop" type="button" class="btn btn-danger" >Cancel operation</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+        </div>
+    </div>
+    <div id="toastsArea" aria-live="polite" aria-atomic="true" style="position: absolute; top: 0; right: 0; min-width: 250px; min-height: 200px;">
+    </div>
+    <div id="toastOne" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            <div class="toast-header"><strong class="mr-auto" id='toastHead'><span >Server says:</strong><small class="text-muted">just now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div id="toastText" class="toast-body">Starting service</div>
+        </div>
+
+</body></html>

@@ -1,0 +1,156 @@
+<html>
+<head>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script> -->
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.8.6/umd/react.development.js" crossorigin></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.6/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.4/react-bootstrap.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js" crossorigin></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-bootstrap/0.25.0/ReactRouterBootstrap.js" crossorigin></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"></link>
+        <script type="text/babel">
+            const Button = ReactBootstrap.Button;
+            const Navbar = ReactBootstrap.Navbar;
+            const NavItem = ReactBootstrap.NavItem;
+            const Nav = ReactBootstrap.Nav;
+            const BrowserRouter = ReactRouterDOM.BrowserRouter;
+            const LinkContainer = ReactRouterBootstrap.LinkContainer;
+            const Link = ReactRouterDOM.Link; 
+            const Route = ReactRouterDOM.Route;
+            //const createBrowserHistory = ReactRouterDOM.Route;
+            const Component = React.Component;
+            const Table = ReactBootstrap.Table;
+            const ButtonGroup = ReactBootstrap.ButtonGroup;
+            const Form = ReactBootstrap.Form;
+            const Alert = ReactBootstrap.Alert;
+            const FormControl = ReactBootstrap.FormControl;
+            const FormGroup = ReactBootstrap.FormGroup;
+            const Col = ReactBootstrap.Col;
+            const ControlLabel = ReactBootstrap.ControlLabel;
+            const Panel = ReactBootstrap.Panel;
+            const Label = ReactBootstrap.Label;
+            const Checkbox = ReactBootstrap.Checkbox;
+            const Row = ReactBootstrap.Row;
+            const Thumbnail = ReactBootstrap.Thumbnail;
+            const Tooltip = ReactBootstrap.Tooltip;
+            const OverlayTrigger = ReactBootstrap.OverlayTrigger;
+            const Pager = ReactBootstrap.Pager;
+        </script>
+        <script type="text/babel" src="js/StartInfo.js"></script>
+        <script type="text/babel" src="js/Camera.js"></script>
+        <script type="text/babel" src="js/Logs.js"></script>
+        <script type="text/babel" src="js/ListCameras.js"></script>
+        <script type="text/babel" src="js/Config.js"></script>
+        <script type="text/babel" src="js/Recognation.js"></script>
+         <script type="text/babel" src="js/Alerts.js"></script>
+        <script type="text/babel" src="js/ListPhotos.js"></script>
+         <script type="text/babel" src="js/Login.js"></script>
+        <script type="text/babel" src="js/Notify.js"></script>
+        <script type="text/babel" src="js/Upload.js"></script>
+        <script type="text/babel" src="js/EditAlert.js"></script>
+        <script type="text/babel" src="js/EditCamera.js"></script>
+        <!--<script type="text/babel" src="js/EditFace.js"></script>
+         -->
+        <script type="text/babel">
+        //console.log(history);
+        //console.log(Navbar);
+            var connection = new WebSocket('ws://localhost:9090/ws'); 
+            // Setting binaryType to accept received binary as either 'blob' or 'arraybuffer'
+            // connection.binaryType = 'arraybuffer';
+            
+            // When the connection is open, send some data to the server
+            connection.onopen = function () {
+                connection.send('Hello'); // Send the message 'Ping' to the server
+            };
+
+            // Log errors
+            connection.onerror = function (error) {
+                console.log('WebSocket Error ' + error);
+            };
+
+            // Log messages from the server
+            connection.onmessage = function (e) {
+                console.log('Server: ' + e.data);
+            };
+
+            // Sending canvas ImageData as ArrayBuffer
+            //var img = canvas_context.getImageData(0, 0, 400, 320);
+            //var binary = new Uint8Array(img.data.length);
+            //for (var i = 0; i < img.data.length; i++) {binary[i] = img.data[i]; }
+            //connection.send(binary.buffer);
+
+            // Sending file as Blob
+            //var file = document.querySelector('input[type="file"]').files[0];
+            //connection.send(file);
+
+            class App extends React.Component {
+                constructor(props) { super(props)
+                this.state = { login: "Login", actionTr:false}
+                this.Auth = localStorage.getItem('id_token')
+                }
+                showContent(){
+                    // <Route path="/editFace/:id" component={EditFace}/>
+                    console.log("show content");
+                    return(
+                    <div>
+                        <Route exact={true} path="/" component={StartInfo}/>
+                        <Route path="/recognation" component={Recognation}/>
+                        <Route path="/facesList" component={ListPhotos}/>
+                        <Route path="/camerasList/" component={ListCameras}/>
+                        <Route path="/config" component={Config}/>
+                        <Route path="/notify" component={Notify}/>
+                        <Route path="/alerts" component={Alerts}/>
+                        <Route path="/log" component={Logs}/>                        
+                        <Route path="/editCamera/:id" component={EditCamera}/>
+                        <Route path="/editAlert/:id" component={EditAlert}/>
+                    </div>
+                    )
+                }
+
+                doLogin(){
+                    console.log("start login",this.Auth )
+                    // if(this.Auth){
+                    // localStorage.removeItem('id_token')
+                    // this.Auth = 0
+                    // this.setState({login:"Login"})
+                    // }else{this.setState({login:"Logout"})}
+                    // history.push("/login")
+                    // window.location.reload()
+                    
+                }
+                render() {
+                    return (
+                        <div>
+                            <Navbar inverse collapseOnSelect>
+                            
+                            <Navbar.Header>
+                                <Navbar.Brand><Link to="/">Bell security panel</Link></Navbar.Brand>
+                                <Navbar.Toggle />
+                            </Navbar.Header>
+                            <Navbar.Collapse>
+                                <Nav onSelect={this.onMenuSelect}>
+                                    <LinkContainer to="/recognation"><NavItem eventKey={1}  href="#">Recognation</NavItem></LinkContainer>
+                                    <LinkContainer to="/facesList"><NavItem eventKey={2} href="#">Faces</NavItem></LinkContainer>
+                                    <LinkContainer to="/camerasList/"><NavItem eventKey={3} href="#">Cameras</NavItem></LinkContainer>
+                                    <LinkContainer to="/notify"><NavItem eventKey={4} href="#">Alerts</NavItem></LinkContainer>
+                                    <LinkContainer to="/log"><NavItem eventKey={5} href="#">Log</NavItem></LinkContainer>
+                                </Nav>
+                                <Nav pullRight>
+                                <NavItem eventKey={0} onClick={this.doLogin.bind(this)} >{this.state.login}</NavItem> </Nav>
+                            </Navbar.Collapse>
+                        </Navbar>
+                        {this.showContent()}
+                        </div>
+                    );
+                }
+        }
+        ReactDOM.render((<BrowserRouter><App /></BrowserRouter>), document.getElementById('root'))
+        </script>
+</head>
+<body>
+        <div id="root"></div>
+</body>
+</html>

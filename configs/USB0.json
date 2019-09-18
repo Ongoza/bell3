@@ -1,0 +1,23 @@
+{
+    "cId": "USB0",
+    "cName": "CamUSB",
+    "cUrl": 0,
+    "vdScl": 1,
+    "cConn": 3,
+    "frSkip": 0,
+    "isLog":true,
+    "isDetect":true,
+    "dtThr":0.5,
+    "imgBrdr": 10,
+    "frScl": 1.1,
+    "minNbrs": 5,
+    "minSz": 30,
+    "dtctInd": 5,
+    "imgFrmt": ".jpg",
+    "imgQlt": 95,
+    "fcCmpr": true,
+    "fcCmprVal": 80,
+    "fcUnCmprVal": 20,
+    "fcFrDel":2,
+    "fcFrAdd":2
+}
